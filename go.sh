@@ -1,5 +1,5 @@
 #!/bin/sh
-docker run \
+docker run --rm \
  --net=iot-net \
  --name iot-device-reg \
- -d iot/device-reg
+ -it iot/device-reg
