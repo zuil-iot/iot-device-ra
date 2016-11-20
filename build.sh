@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t iot/device-reg .
+docker build -t iot/device-ra .
