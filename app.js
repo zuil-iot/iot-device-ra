@@ -13,6 +13,8 @@ var topics_in = [topic_in_mqtt,topic_in_sys];
 const mongoURL = 'mongodb://iot-mongo:27017/iot';
 var reg = require('./reg');
 var state = require('./state');
+var set = require('./set');
+var status = require('./status');
 
 //
 // Monk
@@ -33,9 +35,12 @@ function process_message (topic,json) {
 	if (! deviceID) { console.log("No DeviceID ", deviceID);return; }
 	if (! msg_type) { console.log("No Message Type");return; }
 	if (! data) { console.log("No Message Data");return; }
+	if (topic == topic_in_mqtt && msg_type == "ping") { return; }
 	if (topic == topic_in_mqtt && msg_type == "register") { reg.from_device(collection,deviceID,data); }
-	if (topic == topic_in_mqtt && msg_type == "state") { state.from_device(collection,deviceID,data); }
-	if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(collection,deviceID,data); }
+	else if (topic == topic_in_mqtt && msg_type == "state") { state.from_device(collection,deviceID,data); }
+	else if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(collection,deviceID,data); }
+	else if (topic == topic_in_sys && msg_type == "set") { set.from_sys(collection,deviceID,data); }
+	else if (topic == topic_in_mqtt && msg_type == "status") { status.from_device(collection,deviceID,data); }
 	else { console.log("Unknown message topic/type: ",topic,'/',msg_type); }
 } 
 

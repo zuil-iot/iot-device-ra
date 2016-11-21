@@ -3,14 +3,21 @@ var topic_out = 'to_mqtt';
 
 var initialDeviceRecord = {
 	"alias"		: "",
+	"online"	: false,
 	"org"		: {},
 	"req_state"	: {
 		"pins"		: {
 			"D0": {
-				"val": true
+				"val": false
 			},
 			"D1": {
 				"val": true
+			},
+			"D2": {
+				"val": false
+			},
+			"D3": {
+				"val": false
 			}
 		}
 	},
@@ -22,25 +29,38 @@ var initialDeviceRecord = {
 				"type": "gpio",
 				"mode": "out",
 				"index": 0,
-				"alias": "led0"
+				"alias": "Blue"
 			},
 			"D1": {
 				"type": "gpio",
 				"mode": "out",
 				"index": 1,
-				"alias": "led1"
+				"alias": "Green"
+			},
+			"D2": {
+				"type": "gpio",
+				"mode": "out",
+				"index": 2,
+				"alias": "Yellow"
+			},
+			"D3": {
+				"type": "gpio",
+				"mode": "out",
+				"index": 3,
+				"alias": "Red"
 			},
 			"D4": {
 				"type": "gpio",
 				"mode": "in",
 				"index": 4,
-				"alias": "button1"
+				"alias": "Button"
 			},
 			"A0": {
 				"type": "adc",
 				"mode": "in",
 				"index": 0,
-				"alias": "sensor1"
+				"alias": "Light Meter",
+				"invert": true
 			}
 		},
 	}
@@ -72,8 +92,10 @@ function _reg(collection,deviceID,data,create) {
 				// Not found, so add it
 				console.log("No");
 				if (create) {
-					initialDeviceRecord.deviceID = deviceID;
-					collection.insert(initialDeviceRecord)
+					var newDoc = JSON.parse(JSON.stringify(initialDeviceRecord));
+					newDoc.deviceID = deviceID;
+					newDoc.alias = deviceID;
+					collection.insert(newDoc)
 						.then((docs) => {
 							console.log("Inserted");
 						}).catch((err) => {

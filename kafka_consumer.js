@@ -27,7 +27,7 @@ var options = {
 function on_message(msg) {
 	var topic = msg.topic;
 	var msg_str = msg.value.toString();
-	console.log('Kafka Rcvd: topic = ',topic,' payload = ',msg_str);
+//	console.log('Kafka Rcvd: topic = ',topic,' payload = ',msg_str);
 	var json = JSON.parse(msg_str);
 	if (message_cb) { message_cb(topic,json) }
 }

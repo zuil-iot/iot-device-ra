@@ -1,6 +1,6 @@
 function from_device(collection,deviceID,data) {
-	console.log("Incoming state");
-	collection.findOneAndUpdate({deviceID: deviceID}, {$set: {cur_state: data.cur_state, online: true}})
+	console.log("Incoming online/offline");
+	collection.findOneAndUpdate({deviceID: deviceID}, {$set: {online: data.online}})
 		.then((doc) => {
 			console.log("State updated with findOneAndUpdate");
 		}).catch((err) => {
