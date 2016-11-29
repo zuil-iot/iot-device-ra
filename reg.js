@@ -29,38 +29,48 @@ var initialDeviceRecord = {
 				"type": "gpio",
 				"mode": "out",
 				"index": 0,
-				"alias": "Blue"
+				"alias": "Blue",
+				"alias_index": "blue"
 			},
 			"D1": {
 				"type": "gpio",
 				"mode": "out",
 				"index": 1,
-				"alias": "Green"
+				"alias": "Green",
+				"alias_index": "green"
 			},
 			"D2": {
 				"type": "gpio",
 				"mode": "out",
 				"index": 2,
-				"alias": "Yellow"
+				"alias": "Yellow",
+				"alias_index": "yellow"
 			},
 			"D3": {
 				"type": "gpio",
 				"mode": "out",
 				"index": 3,
-				"alias": "Red"
+				"alias": "Red",
+				"alias_index": "red"
 			},
 			"D4": {
 				"type": "gpio",
 				"mode": "in",
 				"index": 4,
-				"alias": "Button"
+				"alias": "Button",
+				"alias_index": "button",
+				"alert": "both",
+				"stream" : 120
 			},
 			"A0": {
 				"type": "adc",
 				"mode": "in",
 				"index": 0,
 				"alias": "Light Meter",
-				"invert": true
+				"alias_index": "light_meter",
+				"invert": true,
+				"send_delta": 2,
+				"stream" : 600
 			}
 		},
 	}

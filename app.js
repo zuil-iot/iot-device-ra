@@ -4,7 +4,8 @@ var mongodb = require('mongodb');
 const monk = require('monk');
 var reqCmd = "register";
 var resCmd = "config";
-var collectionName = "devices";
+var devicesCollectionName = "devices";
+var streamCollectionName = "stream_data";
 
 var topic_in_mqtt = 'from_mqtt';
 var topic_in_sys = 'device_ra';
@@ -15,6 +16,7 @@ var reg = require('./reg');
 var state = require('./state');
 var set = require('./set');
 var status = require('./status');
+var stream = require('./stream');
 
 //
 // Monk
@@ -24,7 +26,8 @@ const db = monk(mongoURL);
 db.then(() => {
 	console.log("\tConnected");
 })
-var collection = db.get(collectionName);
+var devicesCollection = db.get(devicesCollectionName);
+var streamCollection = db.get(streamCollectionName);
 
 
 function process_message (topic,json) {
@@ -35,12 +38,16 @@ function process_message (topic,json) {
 	if (! deviceID) { console.log("No DeviceID ", deviceID);return; }
 	if (! msg_type) { console.log("No Message Type");return; }
 	if (! data) { console.log("No Message Data");return; }
+	// Ping
 	if (topic == topic_in_mqtt && msg_type == "ping") { return; }
-	if (topic == topic_in_mqtt && msg_type == "register") { reg.from_device(collection,deviceID,data); }
-	else if (topic == topic_in_mqtt && msg_type == "state") { state.from_device(collection,deviceID,data); }
-	else if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(collection,deviceID,data); }
-	else if (topic == topic_in_sys && msg_type == "set") { set.from_sys(collection,deviceID,data); }
-	else if (topic == topic_in_mqtt && msg_type == "status") { status.from_device(collection,deviceID,data); }
+	// Incoming from device
+	if (topic == topic_in_mqtt && msg_type == "register") { reg.from_device(devicesCollection,deviceID,data); }
+	else if (topic == topic_in_mqtt && msg_type == "status") { status.from_device(devicesCollection,deviceID,data); }
+	else if (topic == topic_in_mqtt && msg_type == "state") { state.from_device(devicesCollection,deviceID,data); }
+	else if (topic == topic_in_mqtt && msg_type == "stream") { stream.from_device(streamCollection,deviceID,data); }
+	// Outgoing to device
+	else if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(devicesCollection,deviceID,data); }
+	else if (topic == topic_in_sys && msg_type == "set") { set.from_sys(devicesCollection,deviceID,data); }
 	else { console.log("Unknown message topic/type: ",topic,'/',msg_type); }
 } 
 
