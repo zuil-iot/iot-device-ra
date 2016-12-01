@@ -6,6 +6,7 @@ var reqCmd = "register";
 var resCmd = "config";
 var devicesCollectionName = "devices";
 var streamCollectionName = "stream_data";
+var typesCollectionName = "device-types";
 
 var topic_in_mqtt = 'from_mqtt';
 var topic_in_sys = 'device_ra';
@@ -17,6 +18,7 @@ var state = require('./state');
 var set = require('./set');
 var status = require('./status');
 var stream = require('./stream');
+var type = require('./type');
 
 //
 // Monk
@@ -28,6 +30,7 @@ db.then(() => {
 })
 var devicesCollection = db.get(devicesCollectionName);
 var streamCollection = db.get(streamCollectionName);
+var typesCollection = db.get(typesCollectionName);
 
 
 function process_message (topic,json) {
@@ -40,14 +43,15 @@ function process_message (topic,json) {
 	if (! data) { console.log("No Message Data");return; }
 	// Ping
 	if (topic == topic_in_mqtt && msg_type == "ping") { return; }
-	// Incoming from device
+	// From Device
 	if (topic == topic_in_mqtt && msg_type == "register") { reg.from_device(devicesCollection,deviceID,data); }
 	else if (topic == topic_in_mqtt && msg_type == "status") { status.from_device(devicesCollection,deviceID,data); }
 	else if (topic == topic_in_mqtt && msg_type == "state") { state.from_device(devicesCollection,deviceID,data); }
 	else if (topic == topic_in_mqtt && msg_type == "stream") { stream.from_device(streamCollection,deviceID,data); }
-	// Outgoing to device
-	else if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(devicesCollection,deviceID,data); }
+	// From System
+	else if (topic == topic_in_sys && msg_type == "registered") { reg.from_sys(typesCollection,devicesCollection,deviceID,data); }
 	else if (topic == topic_in_sys && msg_type == "set") { set.from_sys(devicesCollection,deviceID,data); }
+	else if (topic == topic_in_sys && msg_type == "type") { type.from_sys(typesCollection,devicesCollection,deviceID,data); }
 	else { console.log("Unknown message topic/type: ",topic,'/',msg_type); }
 } 
 
