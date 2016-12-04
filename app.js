@@ -34,6 +34,7 @@ var typesCollection = db.get(typesCollectionName);
 
 
 function process_message (topic,json) {
+	console.log(json);
 	// Extract message parts
 	var deviceID = json.deviceID;
 	var msg_type = json.msg_type;

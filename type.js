@@ -5,7 +5,11 @@ function from_sys(typesCollection,devicesCollection,deviceID,data) {
 		.then((typeDoc) => {
 			console.log("Type updated with findOneAndUpdate");
 			devicesCollection.findOneAndUpdate({deviceID: deviceID},
-				{$set: {req_state: typeDoc.req_state, config: typeDoc.config}})
+				{$set: {
+					       req_state: typeDoc.req_state,
+					       display_config: typeDoc.display_config,
+					       device_config: typeDoc.device_config
+				       }})
 				.then((doc) => {
 					console.log("Device type intialized with findOneAndUpdate");
 				}).catch((err) => {
